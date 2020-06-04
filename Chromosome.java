@@ -6,16 +6,16 @@
  */
 public class Chromosome {
 
-    public int number;
+    public String chromosomeNumber;
     //Ints works!
-    public int start;
-    public int end;
+    public long start;
+    public long end;
 
     public double value;
 
 
-    public Chromosome(int number, int start, int end, double value){
-        this.number = number;
+    public Chromosome(String chromosomeNumber, long start, long end, double value){
+        this.chromosomeNumber = chromosomeNumber;
         this.start = start;
         this.end = end;
         this.value = value;
@@ -27,12 +27,7 @@ public class Chromosome {
 
     @Override
     public String toString() {
-        return "Chromosome{" +
-                "number=" + number +
-                ", start=" + start +
-                ", end=" + end +
-                ", value=" + value +
-                '}';
+        return chromosomeNumber + "\t" + start + "\t" +  end + "\t" + value;
     }
 
 }

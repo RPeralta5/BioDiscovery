@@ -7,8 +7,8 @@ public interface SearchQuery {
 
     public void readFile(String[] queryInfo);
 
-    //Method that returns the values;
-    public LinkedList<Chromosome> returnValues();
+    //Method that prints the values of chromosomes returned from the search;
+    public void printValues();
 
 
 }
