@@ -71,6 +71,7 @@ public class Menu {
         SearchOneChromosome search1 = new SearchOneChromosome();
         search1.processQuery(query);
         search1.readFile();
+        search1.printValues();
 
 
 

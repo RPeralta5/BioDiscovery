@@ -10,7 +10,7 @@ public class SearchOneChromosome implements SearchQuery {
     private int endRange;
     private long totalLength;
     private int chromosomeTargetValue;
-    private LinkedList<Chromosome> recordList;
+    private LinkedList<Chromosome> recordList = new LinkedList<>();
     private final String FILE_NAME = "probes.txt";
 
 
@@ -65,6 +65,10 @@ public class SearchOneChromosome implements SearchQuery {
         try {
             raf.seek(lastPosition);
             while(check){
+                //System.out.println("Check loop");
+
+                //clearing the noncomplete line.
+                raf.readLine();
 
                 String line = raf.readLine();
                 String[] line_split = line.split("\t");
@@ -81,16 +85,19 @@ public class SearchOneChromosome implements SearchQuery {
                 3.) startRecord < endRange && endRecord >= endRange == clipping the end of the target range
                  */
                 if(startRecord <= startRange && endRecord < endRange){
+                    System.out.println("Record Added");
                     foundRange = true;
                     Chromosome record = new Chromosome(line_split[0], startRecord, endRecord, Double.parseDouble(line_split[3]));
                     recordList.add(record);
                 }
                 else if(startRecord >= startRange && endRecord <= endRange){
+                    System.out.println("Record Added");
                     foundRange = true;
                     Chromosome record = new Chromosome(line_split[0], startRecord, endRecord, Double.parseDouble(line_split[3]));
                     recordList.add(record);
                 }
                 else if(startRecord < endRange && endRecord >= endRange){
+                    System.out.println("Record Added");
                     foundRange = true;
                     Chromosome record = new Chromosome(line_split[0], startRecord, endRecord, Double.parseDouble(line_split[3]));
                     recordList.add(record);
@@ -100,6 +107,7 @@ public class SearchOneChromosome implements SearchQuery {
                     //we passed the target range, we can now stop
                     if(foundRange){
                         check = false;
+                        System.out.println("Loop stopped");
                     }
                     //we have not found the range yet, we must continue searching.
                     else{
@@ -130,16 +138,17 @@ public class SearchOneChromosome implements SearchQuery {
 
             //Reading the next full line.
             String line = raf.readLine();
-            System.out.println("ReadLine from last position:" + line);
+            //System.out.println("Jump!  -> " + line);
+           // System.out.println("ReadLine from last position:" + line);
             String[] line_split = line.split("\t");
 
             //Check to see if we are on the correct chromosome.
             if(line_split[0] != chr){
                 //if not, we need to check whether we need to keep going or if we passed it.
                 //We are getting the chromosome number or letter.
-                System.out.println(line_split[0]);
+                //System.out.println(line_split[0]);
                 String chrIndex = line_split[0].substring(line_split[0].indexOf("r")+1);
-                System.out.println(chrIndex);
+                //System.out.println(chrIndex);
 
 
                 int value = 0;
@@ -156,32 +165,42 @@ public class SearchOneChromosome implements SearchQuery {
 
                 if(chromosomeTargetValue < value){
                     //we must jump back and do linear search since we overshot the target range, it must be in the last subsection somewhere.
+                    System.out.println("Passed chromosome. Go back and linear search." + line);
+                    //System.out.print(line);
                     linearSearch(lastPosition);
                 }
-                else if(chromosomeTargetValue > value){
+                else{
                     //continue jumping forward
+                    System.out.println("Keep jumping forward : " + line);
+                    //System.out.print(line);
+
                     search_R(lastPosition + SMALL_JUMP);
                 }
             }
 
             //We are on the correct chromosome
             else{
+                System.out.println("Correct CHromosome");
                 //Now we need to check if we are in range or not
                 //Target range is before the current range from the raf.readLine()
                 if(endRange < Long.parseLong(line_split[1])){
                     //need to jump back. We passed the target range so that means it must be somewhere in the last subsection.
                     //Run linear search on the last subsection.
+                    System.out.println("Call linear search");
                     linearSearch(lastPosition);
+
 
                 }
                 // Target range is after the current range from the raf.readLine()
                 else if( startRange > Long.parseLong(line_split[2])){
                     //need to jump forward
+                    System.out.println("Jump!  -> " + line);
                     search_R(lastPosition + SMALL_JUMP);
                 }
                 else{
                     //we are somewhere in the range
                     //The last call to search_R said that it didnt contain the range, so if we just go back to the last position, and read we should be fine.
+                    System.out.println("Call linear search");
                     linearSearch(lastPosition);
                 }
             }
