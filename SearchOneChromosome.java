@@ -26,7 +26,7 @@ public class SearchOneChromosome implements SearchQuery {
 
     private RandomAccessFile raf = null;
     //This is the first byte of information after the header(Chromosome	Start	End	Value	Array)
-    private final int START_POSITION = 34;
+    private final int START_POSITION = 0;
 
 
     @Override
@@ -124,6 +124,11 @@ public class SearchOneChromosome implements SearchQuery {
         try{
             raf.seek(lastPosition);
 
+            //Reading the rest of the cutoff line after we jump
+            raf.readLine();
+
+
+            //Reading the next full line.
             String line = raf.readLine();
             System.out.println("ReadLine from last position:" + line);
             String[] line_split = line.split("\t");
