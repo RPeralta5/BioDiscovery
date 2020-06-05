@@ -71,49 +71,88 @@ public class SearchOneChromosome implements SearchQuery {
                 raf.readLine();
 
                 String line = raf.readLine();
+               // System.out.println(line);
                 String[] line_split = line.split("\t");
-                long startRecord = Long.parseLong(line_split[1]);
-                long endRecord = Long.parseLong(line_split[2]);
-                // if the record doesnt fit in the range, read the next line
-                // if the record doesnt fit and we have already found the range -> check = false;
-                // if the record fits it the range, add it to the linked list of chromosomes.
 
-                /*
-                The record fits in the target range.
-                1.) startRecord <= startRange && endRecord < endRange == clipping the start of the target range
-                2.) startRecord >= startRange && endRecord <= endRange == entire record range is inside the target range
-                3.) startRecord < endRange && endRecord >= endRange == clipping the end of the target range
-                 */
-                if(startRecord <= startRange && endRecord < endRange){
-                    System.out.println("Record Added");
-                    foundRange = true;
-                    Chromosome record = new Chromosome(line_split[0], startRecord, endRecord, Double.parseDouble(line_split[3]));
-                    recordList.add(record);
-                }
-                else if(startRecord >= startRange && endRecord <= endRange){
-                    System.out.println("Record Added");
-                    foundRange = true;
-                    Chromosome record = new Chromosome(line_split[0], startRecord, endRecord, Double.parseDouble(line_split[3]));
-                    recordList.add(record);
-                }
-                else if(startRecord < endRange && endRecord >= endRange){
-                    System.out.println("Record Added");
-                    foundRange = true;
-                    Chromosome record = new Chromosome(line_split[0], startRecord, endRecord, Double.parseDouble(line_split[3]));
-                    recordList.add(record);
-                }
-                //The record does not fit in the range.
-                else {
-                    //we passed the target range, we can now stop
-                    if(foundRange){
-                        check = false;
-                        System.out.println("Loop stopped");
-                    }
-                    //we have not found the range yet, we must continue searching.
-                    else{
 
+                //System.out.println(chr + " " + startRange + " " + endRange);
+
+                String chrIndexRecord = line_split[0].substring(line_split[0].indexOf("r") +1);
+                int recordIndex = 0;
+
+                if(chrIndexRecord.equals("X")){
+                    recordIndex = 23;
+                }
+                else if(chrIndexRecord.equals("Y")){
+                    recordIndex = 24;
+                }
+                else{
+                    recordIndex = Integer.parseInt(chrIndexRecord);
+                }
+
+
+
+                //Need to check whether we are on the right chromosome or not!
+                //keep going until we are on the right
+                if(recordIndex < chromosomeTargetValue){
+                    //keep going
+
+                }
+                else if( recordIndex > chromosomeTargetValue){
+                    //we passed our potential range. stop searching.
+                    check = false;
+                }
+                //We are on the correct chromosome
+                else{
+                  //  System.out.println("We are on the right chromosome.(LS) " + line);
+
+
+
+
+                    long startRecord = Long.parseLong(line_split[1]);
+                    long endRecord = Long.parseLong(line_split[2]);
+                    // if the record doesnt fit in the range, read the next line
+                    // if the record doesnt fit and we have already found the range -> check = false;
+                    // if the record fits it the range, add it to the linked list of chromosomes.
+
+                    /*
+                    The record fits in the target range.
+                    1.) startRecord <= startRange && endRecord < endRange == clipping the start of the target range
+                    2.) startRecord >= startRange && endRecord <= endRange == entire record range is inside the target range
+                    3.) startRecord < endRange && endRecord >= endRange == clipping the end of the target range
+                     */
+                    if(startRecord <= startRange && endRecord < endRange){
+                        System.out.println("Record Added");
+                        foundRange = true;
+                        Chromosome record = new Chromosome(line_split[0], startRecord, endRecord, Double.parseDouble(line_split[3]));
+                        recordList.add(record);
+                    }
+                    else if(startRecord >= startRange && endRecord <= endRange){
+                        System.out.println("Record Added");
+                        foundRange = true;
+                        Chromosome record = new Chromosome(line_split[0], startRecord, endRecord, Double.parseDouble(line_split[3]));
+                        recordList.add(record);
+                    }
+                    else if(startRecord < endRange && endRecord >= endRange){
+                        System.out.println("Record Added");
+                        foundRange = true;
+                        Chromosome record = new Chromosome(line_split[0], startRecord, endRecord, Double.parseDouble(line_split[3]));
+                        recordList.add(record);
+                    }
+                    //The record does not fit in the range.
+                    else {
+                        //we passed the target range, we can now stop
+                        if(foundRange){
+                            check = false;
+                            System.out.println("Loop stopped");
+                        }
+                        //we have not found the range yet, we must continue searching.
+                        else{
+
+                        }
                     }
                 }
+
 
 
             }
@@ -170,7 +209,7 @@ public class SearchOneChromosome implements SearchQuery {
                     //we must jump back and do linear search since we overshot the target range, it must be in the last subsection somewhere.
                     System.out.println("Passed chromosome. Go back and linear search." + line);
                     //System.out.print(line);
-                    linearSearch(lastPosition);
+                    linearSearch(lastPosition - SMALL_JUMP);
                 }
                 else{
                     //continue jumping forward
@@ -193,7 +232,7 @@ public class SearchOneChromosome implements SearchQuery {
                     //need to jump back. We passed the target range so that means it must be somewhere in the last subsection.
                     //Run linear search on the last subsection.
                     System.out.println("We passed the target! Go back and Call linear search");
-                    linearSearch(lastPosition);
+                    linearSearch(lastPosition - SMALL_JUMP);
 
 
                 }
@@ -207,7 +246,7 @@ public class SearchOneChromosome implements SearchQuery {
                     //we are somewhere in the range
                     //The last call to search_R said that it didnt contain the range, so if we just go back to the last position, and read we should be fine.
                     System.out.println("We are somewhere in range. Call linear search");
-                    linearSearch(lastPosition);
+                    linearSearch(lastPosition - SMALL_JUMP);
                 }
             }
         }catch (IOException ex) {
