@@ -11,6 +11,7 @@ public class SearchOneChromosome implements SearchQuery {
     private long totalLength;
     private int chromosomeTargetValue;
     private LinkedList<Chromosome> recordList;
+    private final String FILE_NAME = "probes.txt";
 
 
     //By making the amount of lines jumped smaller we run into less issues when overshooting the range.
@@ -25,7 +26,7 @@ public class SearchOneChromosome implements SearchQuery {
 
     private RandomAccessFile raf = null;
     //This is the first byte of information after the header(Chromosome	Start	End	Value	Array)
-    private final int START_POSITION = 33;
+    private final int START_POSITION = 34;
 
 
     @Override
@@ -39,6 +40,8 @@ public class SearchOneChromosome implements SearchQuery {
         String[] range_split = range.split("-");
         startRange = Integer.parseInt(range_split[0]);
         endRange = Integer.parseInt(range_split[1]);
+
+        System.out.println(chr + " " + startRange + " " + endRange);
 
         String chrIndex = chr.substring(chr.indexOf("r") +1);
 
@@ -120,14 +123,20 @@ public class SearchOneChromosome implements SearchQuery {
         //Dont need to include jumpsize anymore since I am always jumping a constant number of lines.
         try{
             raf.seek(lastPosition);
+
             String line = raf.readLine();
+            System.out.println("ReadLine from last position:" + line);
             String[] line_split = line.split("\t");
 
             //Check to see if we are on the correct chromosome.
             if(line_split[0] != chr){
                 //if not, we need to check whether we need to keep going or if we passed it.
                 //We are getting the chromosome number or letter.
-                String chrIndex = line_split[0].substring(line_split[0].indexOf("r") +1);
+                System.out.println(line_split[0]);
+                String chrIndex = line_split[0].substring(line_split[0].indexOf("r")+1);
+                System.out.println(chrIndex);
+
+
                 int value = 0;
                 if(chrIndex.equals("X")){
                     value = 23;
@@ -141,8 +150,8 @@ public class SearchOneChromosome implements SearchQuery {
 
 
                 if(chromosomeTargetValue < value){
-
                     //we must jump back and do linear search since we overshot the target range, it must be in the last subsection somewhere.
+                    linearSearch(lastPosition);
                 }
                 else if(chromosomeTargetValue > value){
                     //continue jumping forward
@@ -178,13 +187,23 @@ public class SearchOneChromosome implements SearchQuery {
 
 
     @Override
-    public void readFile(String[] queryInfo) {
+    public void readFile() {
 
         try {
             // create a new RandomAccessFile with filename probes.txt
-            raf = new RandomAccessFile("test.txt", "r");
+            raf = new RandomAccessFile(FILE_NAME, "r");
             totalLength = raf.length();
+            //raf.seek(lastPosition);
+           // String line = raf.readLine();
+            //System.out.println("ReadLine:" + line);
+           // String line2 = raf.readLine();
+           // System.out.println("ReadLine:" + line2);
             search_R(START_POSITION);
+
+            //works! (5:05pm - 6/4)
+          //  raf.seek(START_POSITION);
+           // String line3 = raf.readLine();
+           // System.out.println("Seek:" + line3);
 
         } catch (IOException ex) {
             ex.printStackTrace();

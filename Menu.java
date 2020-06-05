@@ -47,6 +47,10 @@ public class Menu {
     }
 
     public void option1(){
+        //Clearing the scanner
+        s.nextLine();
+
+
         //chr22:20980876-20980878
         //query format
         System.out.println("Please insert the query in this format: chr_:start-end");
@@ -65,7 +69,8 @@ public class Menu {
             return;
         }
         SearchOneChromosome search1 = new SearchOneChromosome();
-        search1.search(query);
+        search1.processQuery(query);
+        search1.readFile();
 
 
 

@@ -7,12 +7,14 @@ public class SearchMultipleChromosomes implements SearchQuery{
     }
 
     @Override
-    public void readFile(String[] queryInfo) {
+    public void readFile() {
 
     }
 
     @Override
-    public LinkedList<Chromosome> returnValues() {
-        return null;
+    public void printValues() {
+
     }
+
+
 }
