@@ -55,7 +55,7 @@ public class SearchMultipleChromosomes implements SearchQuery {
         String[] halves = query.split("-");
 
         String[] startH = halves[0].split(":");
-        String[] endH = halves[0].split(":");
+        String[] endH = halves[1].split(":");
 
         chrStart = startH[0];
         startRange = Integer.parseInt(startH[1]);
@@ -73,8 +73,9 @@ public class SearchMultipleChromosomes implements SearchQuery {
         else{
             chrTargetValueStart = Integer.parseInt(chrIndex);
         }
-
-        String chrIndex2 = chrStart.substring(chrEnd.indexOf("r") +1);
+        //System.out.println("ChrStart = " + chrStart);
+        //System.out.println("ChrEnd = " + chrEnd);
+        String chrIndex2 = chrEnd.substring(chrEnd.indexOf("r") +1);
         //Converting the chr value into an int so we can compare targetChr and the chr from a specific record later on.
         if(chrIndex2.equals("X")){
             chrTargetValueEnd = 23;
@@ -129,52 +130,63 @@ public class SearchMultipleChromosomes implements SearchQuery {
 
                 //We need to check if we are on the right chromosome or not.
                 //If the recordIndex < Target, we continue onto the next line.
-                if(recordIndex < chromosomeTargetValue){
+                if(recordIndex < chrTargetValueStart){
                     //keep going to the next line. (no action required)
                 }
                 //if the chromosome number exceeds the target we have reached the end of that chromosome.
                 //We can stop iterating.
-                else if( recordIndex > chromosomeTargetValue){
+
+                else if( recordIndex > chrTargetValueEnd){
+                    //System.out.println(recordIndex + " " +chrTargetValueEnd  );
+                    //System.out.println("Record Index > End " + line);
                     //we passed our potential range. stop searching.
                     check = false;
                 }
-                //We are on the correct chromosome
+                //We are in the correct chromosome range
                 else{
+                    //System.out.println("Correct chromosome range");
                     long startRecord = Long.parseLong(line_split[1]);
                     long endRecord = Long.parseLong(line_split[2]);
-                    // We must check that the chromosome fits in the target range.
+                    //Start Chromosome
+                    if(recordIndex == chrTargetValueStart){
 
-                    //1.)clipping the start of the target range
-                    if(startRecord <= startRange && endRecord < endRange && endRecord > startRange){
-                        // System.out.println("Record Added");
-                        foundRange = true;
-                        ChromosomeRecord record = new ChromosomeRecord(line_split[0], startRecord, endRecord, Double.parseDouble(line_split[3]));
-                        recordList.add(record);
-                    }
-                    //entire record range is inside the target range
-                    else if(endRange >= startRecord && startRecord >= startRange && endRecord <= endRange && endRecord > startRange){
-                        // System.out.println("Record Added");
-                        foundRange = true;
-                        ChromosomeRecord record = new ChromosomeRecord(line_split[0], startRecord, endRecord, Double.parseDouble(line_split[3]));
-                        recordList.add(record);
-                    }
-                    //clipping the end of the target range
-                    else if(startRecord > startRange && startRecord <= endRange && endRecord >= endRange){
-                        // System.out.println("Record Added");
-                        foundRange = true;
-                        ChromosomeRecord record = new ChromosomeRecord(line_split[0], startRecord, endRecord, Double.parseDouble(line_split[3]));
-                        recordList.add(record);
-                    }
-                    //The record does not fit in the range.
-                    else {
-                        //we passed the target range, we can now stop
-                        if(foundRange){
-                            check = false;
+                        //System.out.println(line);
+                        //need to check the start value.
+                        if((startRecord <= startRange && endRecord >= startRange) || startRecord >= startRange){
+                           //System.out.println("Chromosome 2 " + line );
+                            // System.out.println("Record Added");
+                            foundRange = true;
+                            ChromosomeRecord record = new ChromosomeRecord(line_split[0], startRecord, endRecord, Double.parseDouble(line_split[3]));
+                            recordList.add(record);
                         }
-                        //we have not found the range yet, we must continue searching.
                         else{
-                            //keep going to the next line. (no action required)
+                            //we have not found the range yet, we must continue searching.
                         }
+
+                    }
+                    //Chromosomes in the middle
+                    else if( recordIndex > chrTargetValueStart && recordIndex < chrTargetValueEnd){
+                        foundRange = true;
+                        ChromosomeRecord record = new ChromosomeRecord(line_split[0], startRecord, endRecord, Double.parseDouble(line_split[3]));
+                        recordList.add(record);
+                    }
+                    //Ending chromosome
+                    else{
+                        //System.out.println(line);
+                        //Passed the range.
+                        if(startRecord > endRange){
+                           // System.out.println("stoP");
+                            check = false;
+                            //we can now stop.
+                        }
+                        else{
+                            //we have not found reached the end of the range.
+                            foundRange = true;
+                            //System.out.println("keep going");
+                            ChromosomeRecord record = new ChromosomeRecord(line_split[0], startRecord, endRecord, Double.parseDouble(line_split[3]));
+                            recordList.add(record);
+                        }
+
                     }
                 }
             }
@@ -281,8 +293,11 @@ public class SearchMultipleChromosomes implements SearchQuery {
     public void printValues() {
         System.out.println("Records returned from query:");
         System.out.println("ChromosomeRecord\tStart\tEnd\tValue");
+        //long count = 0;
         for(ChromosomeRecord c: recordList){
             System.out.println(c);
+           // count++;
         }
+        //System.out.println(count);
     }
 }
