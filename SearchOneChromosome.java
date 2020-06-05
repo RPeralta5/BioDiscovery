@@ -143,7 +143,10 @@ public class SearchOneChromosome implements SearchQuery {
             String[] line_split = line.split("\t");
 
             //Check to see if we are on the correct chromosome.
-            if(line_split[0] != chr){
+            String recordChr = line_split[0];
+            System.out.println(recordChr + " = " + chr + " ---> " + chr.equals(recordChr));
+
+            if(!chr.equals(recordChr)){
                 //if not, we need to check whether we need to keep going or if we passed it.
                 //We are getting the chromosome number or letter.
                 //System.out.println(line_split[0]);
@@ -180,13 +183,16 @@ public class SearchOneChromosome implements SearchQuery {
 
             //We are on the correct chromosome
             else{
-                System.out.println("Correct CHromosome");
+                System.out.println("Correct CHromosome: " + recordChr + " = " + chr);
+                System.out.println(line);
+                System.out.println(chr.equals(recordChr));
+                //System.out.println(line_split[0]);
                 //Now we need to check if we are in range or not
                 //Target range is before the current range from the raf.readLine()
                 if(endRange < Long.parseLong(line_split[1])){
                     //need to jump back. We passed the target range so that means it must be somewhere in the last subsection.
                     //Run linear search on the last subsection.
-                    System.out.println("Call linear search");
+                    System.out.println("We passed the target! Go back and Call linear search");
                     linearSearch(lastPosition);
 
 
@@ -200,7 +206,7 @@ public class SearchOneChromosome implements SearchQuery {
                 else{
                     //we are somewhere in the range
                     //The last call to search_R said that it didnt contain the range, so if we just go back to the last position, and read we should be fine.
-                    System.out.println("Call linear search");
+                    System.out.println("We are somewhere in range. Call linear search");
                     linearSearch(lastPosition);
                 }
             }
