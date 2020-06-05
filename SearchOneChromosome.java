@@ -64,11 +64,15 @@ public class SearchOneChromosome implements SearchQuery {
 
         try {
             raf.seek(lastPosition);
+            //clearing the noncomplete line.
+            raf.readLine();
+
+
             while(check){
                 //System.out.println("Check loop");
 
-                //clearing the noncomplete line.
-                raf.readLine();
+
+
 
                 String line = raf.readLine();
                // System.out.println(line);
