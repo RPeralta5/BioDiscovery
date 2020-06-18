@@ -9,7 +9,7 @@
  */
 public interface SearchQuery {
     //File that we will be reading the records from.
-    final String FILE_NAME = "probes.txt";
+    final String FILE_NAME = "resources/probes.txt";
 
     //Method that process the query and stores the relevant information.
     public void processQuery(String query);

@@ -30,7 +30,7 @@ public class Menu {
     public void header(){
         System.out.println("      BioDiscovery Inc. Genomic Data Search      ");
         System.out.println("-------------------------------------------------");
-        System.out.println("1.) Search Spanning 1 Chromosome");
+        System.out.println("1.) Search Spanning 1 ChromosomeRecord");
         System.out.println("2.) Search Spanning Multiple Chromosomes");
         System.out.println("3.) Exit");
 
@@ -93,7 +93,7 @@ public class Menu {
 
         //long startTime = System.nanoTime();
 
-        //The SearchOne Chromosome object will take care of the rest of the search and will print out the values returned from the search.
+        //The SearchOneChromosome object will take care of the rest of the search and will print out the values returned from the search.
         search1.processQuery(query);
         search1.readFile();
         search1.printValues();
@@ -110,8 +110,54 @@ public class Menu {
 
 
 
-
+    /*
+        This method prompts the user for searching multiple chromosomes.
+        It checks to make sure that the inputted query contains two : and a -.
+        It has some input validation but it can be sanitized more.
+     */
     public void searchMultipleC(){
+        //Clearing the scanner -> removes the /n character from when we read the last int for the user's choice.
+        s.nextLine();
 
+
+        //chr3:5000-chr5:8000
+        //query format
+        System.out.println("Please insert the query in this format: chr_:start-chr_:end");
+        System.out.println("Example: chr3:5000-chr5:8000");
+        String query = s.nextLine();
+
+
+        //Check that the query contains two semicolons and a dash(-)
+        int indexDash = query.indexOf("-");
+        if(indexDash == -1){
+            System.out.println("Please enter the query in the correct format.");
+            searchMultipleC();
+            return;
+        }
+        String[] halves = query.split("-");
+        int indexColon1 = halves[0].indexOf(":");
+        int indexColon2 = halves[1].indexOf(":");
+        if(indexColon1 == -1 || indexColon2 == -1){
+            System.out.println("Please enter the query in the correct format.");
+            searchMultipleC();
+            return;
+        }
+
+
+
+
+        //If the query has passed the checks, we can pass the query to the SearchMultipleChromosomes object and begin searching for the records in the target range.
+        SearchMultipleChromosomes search2 = new SearchMultipleChromosomes();
+
+        //long startTime = System.nanoTime();
+
+        //The SearchMultipleChromosomes object will take care of the rest of the search and will print out the values returned from the search.
+        search2.processQuery(query);
+        search2.readFile();
+        search2.printValues();
+
+        //long endTime   = System.nanoTime();
+        //long totalTime = endTime - startTime;
+        //System.out.println(totalTime/1000000);
     }
 }

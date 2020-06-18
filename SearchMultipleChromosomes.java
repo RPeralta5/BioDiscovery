@@ -73,8 +73,7 @@ public class SearchMultipleChromosomes implements SearchQuery {
         else{
             chrTargetValueStart = Integer.parseInt(chrIndex);
         }
-        //System.out.println("ChrStart = " + chrStart);
-        //System.out.println("ChrEnd = " + chrEnd);
+
         String chrIndex2 = chrEnd.substring(chrEnd.indexOf("r") +1);
         //Converting the chr value into an int so we can compare targetChr and the chr from a specific record later on.
         if(chrIndex2.equals("X")){
@@ -137,8 +136,6 @@ public class SearchMultipleChromosomes implements SearchQuery {
                 //We can stop iterating.
 
                 else if( recordIndex > chrTargetValueEnd){
-                    //System.out.println(recordIndex + " " +chrTargetValueEnd  );
-                    //System.out.println("Record Index > End " + line);
                     //we passed our potential range. stop searching.
                     check = false;
                 }
@@ -172,17 +169,14 @@ public class SearchMultipleChromosomes implements SearchQuery {
                     }
                     //Ending chromosome
                     else{
-                        //System.out.println(line);
                         //Passed the range.
                         if(startRecord > endRange){
-                           // System.out.println("stoP");
                             check = false;
                             //we can now stop.
                         }
                         else{
                             //we have not found reached the end of the range.
                             foundRange = true;
-                            //System.out.println("keep going");
                             ChromosomeRecord record = new ChromosomeRecord(line_split[0], startRecord, endRecord, Double.parseDouble(line_split[3]));
                             recordList.add(record);
                         }
@@ -293,11 +287,11 @@ public class SearchMultipleChromosomes implements SearchQuery {
     public void printValues() {
         System.out.println("Records returned from query:");
         System.out.println("ChromosomeRecord\tStart\tEnd\tValue");
-        //long count = 0;
+        long count = 0;
         for(ChromosomeRecord c: recordList){
             System.out.println(c);
-           // count++;
+            count++;
         }
-        //System.out.println(count);
+        System.out.println("Total Records: " + count);
     }
 }

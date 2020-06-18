@@ -2,7 +2,7 @@
     Public Class: ChromosomeRecord
     Author: Ryan Peralta
     Last Edit: 6/3/2020
-        Added comments.
+        Created the toString() method.
 
     This class allows us to store the information for the record returned by our SearchQuery Objects.
     We will print these objects after the query finishes searching.
