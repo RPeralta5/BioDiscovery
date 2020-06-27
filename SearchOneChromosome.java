@@ -5,8 +5,8 @@ import java.util.LinkedList;
 /*
     Public Class: SearchOneChromosome
     Author: Ryan Peralta
-    Last Edit: 6/4/2020
-        Fixed the linearSearch's requirements for seeing if a record should be saved or not.
+    Last Edit: 6/26/2020
+        Fixed the linearSearch's requirements for record that clipped the left side of the target range.
 
     SearchOneChromosome reads the text file containing the records and searches for records that fall in the target range of the user's query.
     The class contains multiple methods that check to see if we need to continue skipping lines in the file or if we should jump back and start looking at the data more closely.
