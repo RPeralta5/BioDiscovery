@@ -128,7 +128,7 @@ public class SearchOneChromosome implements SearchQuery {
                     // We must check that the chromosome fits in the target range.
 
                     //1.)clipping the start of the target range
-                    if(startRecord <= startRange && endRecord < endRange && endRecord > startRange){
+                    if(startRecord <= startRange && endRecord > startRange){
                        // System.out.println("Record Added");
                         foundRange = true;
                         ChromosomeRecord record = new ChromosomeRecord(line_split[0], startRecord, endRecord, Double.parseDouble(line_split[3]));
